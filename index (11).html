@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TOK Exhibition Hub</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.10);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.68);
+      --line: rgba(255,255,255,.14);
+      --accent: #60a5fa;
+      --radius: 16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background: radial-gradient(1200px 800px at 15% 10%, rgba(96,165,250,.16), transparent 60%),
+                  radial-gradient(1200px 800px at 85% 0%, rgba(167,139,250,.14), transparent 55%),
+                  radial-gradient(1100px 900px at 70% 100%, rgba(52,211,153,.12), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+      height:100vh;
+      overflow:hidden;
+    }
+
+    .app{
+      display:flex;
+      height:100vh;
+      width:100%;
+    }
+
+    /* Left menu */
+    nav{
+      width: 280px;
+      min-width: 240px;
+      max-width: 340px;
+      padding: 16px 14px;
+      border-right: 1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      backdrop-filter: blur(8px);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .brand{
+      padding: 12px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, var(--panel2), var(--panel));
+      box-shadow: 0 16px 45px rgba(0,0,0,.35);
+    }
+    .brand .title{
+      font-weight: 850;
+      letter-spacing:.2px;
+      margin:0 0 6px 0;
+      font-size: 16px;
+    }
+    .brand .sub{
+      margin:0;
+      color: var(--muted);
+      font-size: 12.8px;
+      line-height: 1.35;
+    }
+
+    .btn{
+      appearance:none;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 12px 12px;
+      cursor:pointer;
+      text-align:left;
+      font-weight: 750;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+    }
+    .btn:hover{ background: rgba(255,255,255,.085); border-color: rgba(255,255,255,.22); transform: translateY(-1px); }
+    .btn:active{ transform: translateY(0px) scale(.995); }
+    .btn small{
+      font-weight:650;
+      color: var(--muted);
+    }
+    .btn.active{
+      background: rgba(96,165,250,.14);
+      border-color: rgba(96,165,250,.55);
+      box-shadow: 0 16px 45px rgba(0,0,0,.32);
+    }
+    .dot{
+      width: 10px; height: 10px; border-radius: 99px;
+      background: var(--accent);
+      flex:0 0 auto;
+      opacity:.9;
+    }
+
+    .spacer{flex:1}
+    .hint{
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.35;
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      border: 1px dashed rgba(255,255,255,.18);
+      background: rgba(255,255,255,.03);
+    }
+
+    /* Main viewer */
+    main{
+      flex:1;
+      height:100vh;
+      padding: 14px;
+    }
+    .frameWrap{
+      height: calc(100vh - 28px);
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.15);
+      box-shadow: 0 18px 55px rgba(0,0,0,.45);
+      overflow:hidden;
+    }
+    iframe{
+      width:100%;
+      height:100%;
+      border:0;
+      background: white; /* for embedded Google Form */
+    }
+
+    /* Mobile: menu becomes top bar */
+    @media (max-width: 820px){
+      body{ overflow:auto; }
+      .app{ flex-direction:column; height:auto; min-height:100vh; }
+      nav{
+        width:100%;
+        max-width:none;
+        border-right:none;
+        border-bottom: 1px solid var(--line);
+      }
+      main{ height: calc(100vh - 280px); }
+      .frameWrap{ height: calc(100vh - 280px - 28px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <nav>
+      <div class="brand">
+        <p class="title">TOK Exhibition Hub</p>
+        <p class="sub">Use the left menu to switch between the Prompt Mosaic and the Google Form.</p>
+      </div>
+
+      <button class="btn active" id="btn-prompts" data-src="Prompts.html" type="button">
+        <span style="display:flex;align-items:center;gap:10px;">
+          <span class="dot"></span>
+          Prompt Mosaic
+        </span>
+        <small>prompts</small>
+      </button>
+
+      <button class="btn" id="btn-form" data-src="form.html" type="button">
+        <span style="display:flex;align-items:center;gap:10px;">
+          <span class="dot" style="background:#34d399;"></span>
+          Submit Form
+        </span>
+        <small>responses</small>
+      </button>
+
+      <div class="spacer"></div>
+
+      <div class="hint">
+        Tip: If you rename <code>Prompts.html</code> to <code>prompts.html</code>, also update the menu link above to match.
+      </div>
+    </nav>
+
+    <main>
+      <div class="frameWrap">
+        <iframe id="viewer" title="Content viewer"
+                src="Prompts.html"
+                referrerpolicy="no-referrer-when-downgrade"
+                allow="clipboard-write; fullscreen"
+                loading="eager"></iframe>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const viewer = document.getElementById('viewer');
+    const buttons = Array.from(document.querySelectorAll('.btn[data-src]'));
+
+    function setActive(btn){
+      buttons.forEach(b => b.classList.toggle('active', b === btn));
+      const src = btn.getAttribute('data-src');
+      viewer.src = src;
+    }
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => setActive(btn));
+    });
+  </script>
+</body>
+</html>
