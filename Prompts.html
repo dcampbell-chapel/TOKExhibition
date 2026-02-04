@@ -100,7 +100,7 @@
       border: 1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 12px 12px 10px;
+      padding: 12px 12px 14px; /* Increased bottom padding slightly */
       cursor:pointer;
       position:relative;
       overflow:hidden;
@@ -147,112 +147,52 @@
     .dot{width:10px;height:10px;border-radius:999px;display:inline-block;opacity:.95}
 
     .q{
-      margin:0 0 10px 0;
+      margin:0 0 8px 0;
       font-size: 15px;
       line-height:1.22;
       font-weight: 800;
       letter-spacing:.1px;
       flex:0 0 auto;
     }
-
-    /* Bottom area inside each tile */
-    .bottom{
-      margin-top:auto;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      min-height: 0;
-    }
-
+    
+    /* SCROLLABLE CONTENT AREA */
     .mini{
       margin:0;
       color: var(--muted);
       font-size: 12.8px;
-      line-height:1.3;
-      overflow:hidden;
-      display:-webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
+      line-height:1.4;
+      
+      /* New Scroll Logic */
+      flex: 1; /* Fills remaining space */
+      overflow-y: auto; /* Enables vertical scrolling */
+      padding-right: 4px; /* Space for scrollbar */
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,.3) transparent;
+      
+      /* Ensure text is above the bottom accent bar visually */
+      padding-bottom: 4px;
     }
 
-    /* Read more button */
-    .moreBtn{
-      align-self:flex-start;
-      appearance:none;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.86);
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-size: 12px;
-      font-weight: 750;
-      cursor:pointer;
-      transition: background .12s ease, border-color .12s ease, transform .12s ease;
+    /* Webkit Scrollbar Styling (Chrome, Safari, Edge) */
+    .mini::-webkit-scrollbar {
+      width: 4px;
     }
-    .moreBtn:hover{
-      background: rgba(255,255,255,.09);
-      border-color: rgba(255,255,255,.24);
-      transform: translateY(-1px);
+    .mini::-webkit-scrollbar-track {
+      background: transparent;
     }
-    .moreBtn:active{ transform: translateY(0px); }
-
-    /* In-card overlay panel (scrollable) */
-    .morePanel{
-      position:absolute;
-      inset:10px;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(12,18,32,.97);
-      box-shadow: 0 18px 55px rgba(0,0,0,.55);
-      display:none;
-      flex-direction:column;
-      overflow:hidden;
-      z-index: 5;
+    .mini::-webkit-scrollbar-thumb {
+      background-color: rgba(255,255,255,.3);
+      border-radius: 4px;
     }
-    .morePanel.show{ display:flex; }
-
-    .moreTop{
-      padding:10px 10px 8px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      border-bottom:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.04);
-    }
-    .moreTop .ttl{
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing:.22px;
-      color: rgba(255,255,255,.70);
-      font-weight: 800;
-    }
-    .moreClose{
-      appearance:none;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      border-radius: 12px;
-      padding: 6px 9px;
-      cursor:pointer;
-      font-weight: 850;
-      line-height: 1;
-    }
-    .moreClose:hover{ background: rgba(255,255,255,.10); }
-
-    .moreText{
-      padding:10px 12px 12px;
-      overflow:auto;
-      font-size: 13px;
-      line-height: 1.35;
-      color: rgba(255,255,255,.90);
-      white-space: pre-wrap;
+    .mini::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(255,255,255,.5);
     }
 
     .accentBar{
       position:absolute; inset:auto 0 0 0;
       height: 6px;
       opacity:.95;
+      pointer-events: none; /* Let clicks pass through to scrollbar if needed */
     }
 
     /* Drawer */
@@ -406,6 +346,8 @@
 
     // ----------------------------
     // DATA
+    // REVISED for Exhibition Alignment:
+    // Focus is now on "The Object" and specific links, not generic essay debating.
     // ----------------------------
     const DATA = [
       { n:1, q:"What counts as knowledge?",
@@ -600,14 +542,6 @@
     const grid = document.getElementById("grid");
     const search = document.getElementById("search");
 
-    // Helper: decide when to show the "Read more" button
-    function shouldShowReadMore(txt){
-      if(!txt) return false;
-      const t = String(txt).trim();
-      // heuristic: clamp is 3 lines, so show button for longer blurbs
-      return t.length > 110;
-    }
-
     function render(){
       const q = (search.value || "").trim().toLowerCase();
       const f = kfFilter.value;
@@ -630,93 +564,24 @@
         const primary = d.kf?.[0] || "Scope";
         const accent = kfColor(primary);
 
-        const previewText = d.guidance || d.hidden || d.translation || "";
-        const showRM = shouldShowReadMore(previewText);
-
         card.innerHTML = `
           <div class="topline">
             <div class="num">${d.n}</div>
             <div class="pill"><span class="dot" style="background:${accent}"></span>${escapeHtml(primary)}</div>
           </div>
-
           <h3 class="q">${escapeHtml(d.q)}</h3>
-
-          <div class="bottom">
-            <p class="mini">${escapeHtml(previewText)}</p>
-            ${showRM ? `<button class="moreBtn" type="button" aria-label="Read more preview text for prompt ${d.n}">Read more</button>` : ``}
-          </div>
-
-          <div class="morePanel" aria-hidden="true">
-            <div class="moreTop">
-              <div class="ttl">More</div>
-              <button class="moreClose" type="button" aria-label="Close read more">✕</button>
-            </div>
-            <div class="moreText">${escapeHtml(previewText)}</div>
-          </div>
-
+          <p class="mini">${escapeHtml(d.guidance || d.hidden || d.translation || "")}</p>
           <div class="accentBar" style="background:${accent}"></div>
         `;
 
-        // Card click opens drawer (unless clicking Read More UI)
-        card.addEventListener("click", ()=>openDrawer(d));
+        card.addEventListener("click", (e) => {
+          // If user is selecting text, do not open drawer
+          const selection = window.getSelection();
+          if(selection.toString().length > 0) return;
+          openDrawer(d);
+        });
         card.addEventListener("keydown",(e)=>{
           if(e.key==="Enter" || e.key===" "){ e.preventDefault(); openDrawer(d); }
-        });
-
-        // Read More overlay logic (stops propagation so it doesn't open drawer)
-        const moreBtn = card.querySelector(".moreBtn");
-        const morePanel = card.querySelector(".morePanel");
-        const moreClose = card.querySelector(".moreClose");
-
-        function openMore(){
-          if(!morePanel) return;
-          morePanel.classList.add("show");
-          morePanel.setAttribute("aria-hidden","false");
-          // focus close for easy exit
-          moreClose?.focus();
-        }
-        function closeMore(){
-          if(!morePanel) return;
-          morePanel.classList.remove("show");
-          morePanel.setAttribute("aria-hidden","true");
-        }
-
-        moreBtn?.addEventListener("click",(e)=>{
-          e.stopPropagation();
-          e.preventDefault();
-          openMore();
-        });
-
-        moreClose?.addEventListener("click",(e)=>{
-          e.stopPropagation();
-          e.preventDefault();
-          closeMore();
-        });
-
-        // Click inside the panel should NOT open the drawer
-        morePanel?.addEventListener("click",(e)=>{
-          e.stopPropagation();
-        });
-
-        // Clicking the card while panel is open (outside panel area) closes it
-        card.addEventListener("click",(e)=>{
-          if(morePanel && morePanel.classList.contains("show")){
-            // If click happened outside the panel, close it and do NOT open drawer
-            if(!morePanel.contains(e.target)){
-              e.stopPropagation();
-              e.preventDefault();
-              closeMore();
-            }
-          }
-        }, true);
-
-        // Esc closes Read More first, then drawer handler can run separately
-        card.addEventListener("keydown",(e)=>{
-          if(e.key === "Escape" && morePanel && morePanel.classList.contains("show")){
-            e.stopPropagation();
-            e.preventDefault();
-            closeMore();
-          }
         });
 
         grid.appendChild(card);
