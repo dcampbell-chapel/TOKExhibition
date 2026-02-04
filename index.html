@@ -93,14 +93,7 @@
       background: rgba(96,165,250,.14);
       border-color: rgba(96,165,250,.55);
       box-shadow: 0 16px 45px rgba(0,0,0,.32);
-    }
-    .dot{
-      width: 10px; height: 10px; border-radius: 99px;
-      background: var(--accent);
-      flex:0 0 auto;
-      opacity:.9;
-    }
-
+    
     .spacer{flex:1}
     .hint{
       color: var(--muted);
@@ -156,21 +149,15 @@
         <p class="sub">Use the left menu to switch between the Prompt Mosaic and the Google Form.</p>
       </div>
 
-      <button class="btn active" id="btn-prompts" data-src="Prompts.html" type="button">
-        <span style="display:flex;align-items:center;gap:10px;">
-          <span class="dot"></span>
-          Prompt Mosaic
-        </span>
+    <button class="btn active" id="btn-prompts" data-src="Prompts.html" type="button">
+      <span>Prompt Mosaic</span>
         <small>prompts</small>
-      </button>
+    </button>
 
-      <button class="btn" id="btn-form" data-src="form.html" type="button">
-        <span style="display:flex;align-items:center;gap:10px;">
-          <span class="dot" style="background:#34d399;"></span>
-          Submit Form
-        </span>
+    <button class="btn" id="btn-form" data-src="form.html" type="button">
+      <span>Submit Form</span>
         <small>responses</small>
-      </button>
+    </button>
 
       <div class="spacer"></div>
 
