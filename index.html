@@ -79,9 +79,9 @@
       padding:12px;
       cursor:pointer;
       text-align:left;
-      font-weight:700;
+      font-weight:750;
       display:flex;
-      justify-content:space-between;
+      justify-content:flex-start;
       align-items:center;
       transition: background .12s ease, border-color .12s ease;
     }
@@ -94,11 +94,6 @@
     .btn.active{
       background: rgba(96,165,250,.16);
       border-color: rgba(96,165,250,.55);
-    }
-
-    .btn small{
-      color:var(--muted);
-      font-weight:600;
     }
 
     .spacer{ flex:1; }
@@ -147,17 +142,15 @@
     <nav>
       <div class="brand">
         <h1>TOK Exhibition Hub</h1>
-        <p>Navigate between the prompt mosaic and the submission form.</p>
+        <p>Use the menu to explore prompts or choose prompts in the form.</p>
       </div>
 
-      <button class="btn active" data-src="Prompts.html">
-        <span>Prompt Mosaic</span>
-        <small>prompts</small>
+      <button class="btn active" data-src="Prompts.html" type="button">
+        Explore Prompts
       </button>
 
-      <button class="btn" data-src="form.html">
-        <span>Submit Form</span>
-        <small>responses</small>
+      <button class="btn" data-src="form.html" type="button">
+        Choose Prompts
       </button>
 
       <div class="spacer"></div>
